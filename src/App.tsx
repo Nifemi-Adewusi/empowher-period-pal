@@ -38,6 +38,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/auth" element={user ? <Navigate to="/dashboard" replace /> : <Auth />} />
         <Route path="/dashboard" element={<ProtectedRoute element={<Dashboard />} />} />
         <Route path="/calendar" element={<ProtectedRoute element={<Calendar />} />} />
+        <Route path="/onboarding" element={<ProtectedRoute element={<div className="min-h-screen flex items-center justify-center">Onboarding Page (Coming Soon)</div>} />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Navbar />

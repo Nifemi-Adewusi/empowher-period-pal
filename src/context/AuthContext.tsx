@@ -5,6 +5,7 @@ type User = {
   id: string;
   name: string;
   email: string;
+  photoURL?: string;
   lastPeriod?: Date;
   cycleLength?: number;
   periodLength?: number;
@@ -15,6 +16,7 @@ type AuthContextType = {
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (name: string, email: string, password: string) => Promise<void>;
+  googleAuth: () => Promise<void>;
   logout: () => void;
   updateProfile: (data: Partial<User>) => void;
 };
@@ -72,6 +74,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setLoading(false);
   };
 
+  const googleAuth = async () => {
+    setLoading(true);
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    
+    // Mock Google authentication
+    const mockUser = {
+      id: '1',
+      name: 'Jane Google',
+      email: 'jane.google@example.com',
+      photoURL: 'https://via.placeholder.com/150',
+    };
+    
+    setUser(mockUser);
+    localStorage.setItem('empowher_user', JSON.stringify(mockUser));
+    setLoading(false);
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem('empowher_user');
@@ -86,7 +106,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, signup, logout, updateProfile }}>
+    <AuthContext.Provider value={{ user, loading, login, signup, googleAuth, logout, updateProfile }}>
       {children}
     </AuthContext.Provider>
   );
