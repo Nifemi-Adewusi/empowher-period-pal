@@ -1,5 +1,12 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { createClient, SupabaseClient, User as SupabaseUser } from '@supabase/supabase-js';
+
+// Create Supabase client
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 type User = {
   id: string;
@@ -17,8 +24,8 @@ type AuthContextType = {
   login: (email: string, password: string) => Promise<void>;
   signup: (name: string, email: string, password: string) => Promise<void>;
   googleAuth: () => Promise<void>;
-  logout: () => void;
-  updateProfile: (data: Partial<User>) => void;
+  logout: () => Promise<void>;
+  updateProfile: (data: Partial<User>) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -27,82 +34,190 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Mock authentication functions for now - would connect to a real auth system like Firebase, Auth0, etc
+  // Set up auth state listener on mount
   useEffect(() => {
-    // Check if user is already logged in
-    const storedUser = localStorage.getItem('empowher_user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setLoading(false);
+    // Check active session
+    const checkSession = async () => {
+      setLoading(true);
+      
+      // Get user session
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (session) {
+        // Fetch user profile data from profiles table
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
+        
+        setUser({
+          id: session.user.id,
+          name: profile?.name || session.user.user_metadata?.full_name || 'User',
+          email: session.user.email || '',
+          photoURL: profile?.photo_url || session.user.user_metadata?.avatar_url,
+          lastPeriod: profile?.last_period ? new Date(profile.last_period) : undefined,
+          cycleLength: profile?.cycle_length || 28,
+          periodLength: profile?.period_length || 5,
+        });
+      }
+      
+      setLoading(false);
+    };
+    
+    checkSession();
+    
+    // Set up auth state subscriber
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        // Fetch user profile data from profiles table
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
+        
+        if (profile) {
+          setUser({
+            id: session.user.id,
+            name: profile.name || session.user.user_metadata?.full_name || 'User',
+            email: session.user.email || '',
+            photoURL: profile.photo_url || session.user.user_metadata?.avatar_url,
+            lastPeriod: profile.last_period ? new Date(profile.last_period) : undefined,
+            cycleLength: profile.cycle_length || 28,
+            periodLength: profile.period_length || 5,
+          });
+        } else {
+          // Create a profile if it doesn't exist
+          const newProfile = {
+            id: session.user.id,
+            name: session.user.user_metadata?.full_name || 'User',
+            email: session.user.email,
+            photo_url: session.user.user_metadata?.avatar_url,
+          };
+          
+          await supabase.from('profiles').insert([newProfile]);
+          
+          setUser({
+            id: session.user.id,
+            name: newProfile.name,
+            email: newProfile.email || '',
+            photoURL: newProfile.photo_url,
+          });
+        }
+      } else if (event === 'SIGNED_OUT') {
+        setUser(null);
+      }
+    });
+    
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const login = async (email: string, password: string) => {
     setLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
     
-    // Mock login
-    const mockUser = {
-      id: '1',
-      name: 'Jane Doe',
-      email: email,
-      lastPeriod: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000), // 15 days ago
-      cycleLength: 28,
-      periodLength: 5
-    };
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
     
-    setUser(mockUser);
-    localStorage.setItem('empowher_user', JSON.stringify(mockUser));
+    if (error) {
+      throw new Error(error.message);
+    }
+    
     setLoading(false);
   };
 
   const signup = async (name: string, email: string, password: string) => {
     setLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
     
-    // Mock signup
-    const mockUser = {
-      id: '1',
-      name: name,
-      email: email,
-    };
+    const { error, data } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: name,
+        },
+      },
+    });
     
-    setUser(mockUser);
-    localStorage.setItem('empowher_user', JSON.stringify(mockUser));
+    if (error) {
+      throw new Error(error.message);
+    }
+    
+    // Create profile in the profiles table
+    if (data.user) {
+      await supabase.from('profiles').insert([
+        {
+          id: data.user.id,
+          name: name,
+          email: email,
+        },
+      ]);
+    }
+    
     setLoading(false);
   };
 
   const googleAuth = async () => {
-    setLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
     
-    // Mock Google authentication
-    const mockUser = {
-      id: '1',
-      name: 'Jane Google',
-      email: 'jane.google@example.com',
-      photoURL: 'https://via.placeholder.com/150',
+    if (error) {
+      throw new Error(error.message);
+    }
+  };
+
+  const logout = async () => {
+    const { error } = await supabase.auth.signOut();
+    
+    if (error) {
+      throw new Error(error.message);
+    }
+    
+    setUser(null);
+  };
+
+  const updateProfile = async (data: Partial<User>) => {
+    if (!user) return;
+    
+    setLoading(true);
+    
+    // Convert Date objects to ISO strings for storage
+    const profileData = {
+      ...data,
+      last_period: data.lastPeriod ? data.lastPeriod.toISOString() : undefined,
+      cycle_length: data.cycleLength,
+      period_length: data.periodLength,
     };
     
-    setUser(mockUser);
-    localStorage.setItem('empowher_user', JSON.stringify(mockUser));
-    setLoading(false);
-  };
-
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('empowher_user');
-  };
-
-  const updateProfile = (data: Partial<User>) => {
-    if (user) {
-      const updatedUser = { ...user, ...data };
-      setUser(updatedUser);
-      localStorage.setItem('empowher_user', JSON.stringify(updatedUser));
+    // Remove client-side only fields that don't match the database schema
+    const { lastPeriod, cycleLength, periodLength, ...restData } = profileData;
+    
+    const { error } = await supabase
+      .from('profiles')
+      .update({
+        ...restData,
+        last_period: profileData.last_period,
+        cycle_length: profileData.cycle_length,
+        period_length: profileData.period_length,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', user.id);
+    
+    if (error) {
+      throw new Error(error.message);
     }
+    
+    // Update local user state
+    setUser({ ...user, ...data });
+    setLoading(false);
   };
 
   return (

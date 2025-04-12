@@ -12,6 +12,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Calendar from "./pages/Calendar";
 import Navbar from "./components/Navbar";
+import AuthCallback from "./pages/AuthCallback";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,7 @@ const AppRoutes: React.FC = () => {
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/auth" element={user ? <Navigate to="/dashboard" replace /> : <Auth />} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/dashboard" element={<ProtectedRoute element={<Dashboard />} />} />
         <Route path="/calendar" element={<ProtectedRoute element={<Calendar />} />} />
         <Route path="/onboarding" element={<ProtectedRoute element={<div className="min-h-screen flex items-center justify-center">Onboarding Page (Coming Soon)</div>} />} />
