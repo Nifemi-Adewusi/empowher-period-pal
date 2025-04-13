@@ -1,21 +1,7 @@
-
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createClient } from '@supabase/supabase-js';
 import { toast } from "@/hooks/use-toast";
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-// Check if environment variables are set
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error("Missing Supabase configuration. Make sure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set in your environment variables.");
-}
-
-const supabase = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co',  // Fallback to prevent client creation error
-  supabaseAnonKey || 'placeholder_key'  // Fallback to prevent client creation error
-);
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
 const AuthCallback = () => {
   const navigate = useNavigate();
@@ -23,7 +9,7 @@ const AuthCallback = () => {
   useEffect(() => {
     // Handle the OAuth callback
     const handleAuthCallback = async () => {
-      if (!supabaseUrl || !supabaseAnonKey) {
+      if (!isSupabaseConfigured()) {
         toast({
           title: "Configuration Error",
           description: "Supabase configuration is missing. Please check your environment variables.",
