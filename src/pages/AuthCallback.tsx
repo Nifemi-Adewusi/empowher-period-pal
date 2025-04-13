@@ -1,11 +1,21 @@
+
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
+import { toast } from "@/hooks/use-toast";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Check if environment variables are set
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error("Missing Supabase configuration. Make sure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set in your environment variables.");
+}
+
+const supabase = createClient(
+  supabaseUrl || 'https://placeholder.supabase.co',  // Fallback to prevent client creation error
+  supabaseAnonKey || 'placeholder_key'  // Fallback to prevent client creation error
+);
 
 const AuthCallback = () => {
   const navigate = useNavigate();
@@ -13,6 +23,16 @@ const AuthCallback = () => {
   useEffect(() => {
     // Handle the OAuth callback
     const handleAuthCallback = async () => {
+      if (!supabaseUrl || !supabaseAnonKey) {
+        toast({
+          title: "Configuration Error",
+          description: "Supabase configuration is missing. Please check your environment variables.",
+          variant: "destructive",
+        });
+        navigate('/auth');
+        return;
+      }
+      
       try {
         const { data, error } = await supabase.auth.getUser();
         
@@ -26,6 +46,11 @@ const AuthCallback = () => {
             .eq('id', data.user.id)
             .single();
           
+          toast({
+            title: "Authentication Successful",
+            description: "You have successfully logged in.",
+          });
+          
           if (profile && profile.last_period) {
             // Existing user with period data - send to dashboard
             navigate('/dashboard');
@@ -38,6 +63,13 @@ const AuthCallback = () => {
         }
       } catch (error) {
         console.error('Error in auth callback:', error);
+        
+        toast({
+          title: "Authentication Error",
+          description: error instanceof Error ? error.message : "Failed to complete authentication",
+          variant: "destructive",
+        });
+        
         navigate('/auth');
       }
     };

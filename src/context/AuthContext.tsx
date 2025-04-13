@@ -1,12 +1,20 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { createClient, SupabaseClient, User as SupabaseUser } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { toast } from "@/hooks/use-toast";
 
 // Create Supabase client
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Check if environment variables are set
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error("Missing Supabase configuration. Make sure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set in your environment variables.");
+}
+
+const supabase = createClient(
+  supabaseUrl || 'https://placeholder.supabase.co',  // Fallback to prevent client creation error
+  supabaseAnonKey || 'placeholder_key'  // Fallback to prevent client creation error
+);
 
 type User = {
   id: string;
@@ -36,6 +44,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Set up auth state listener on mount
   useEffect(() => {
+    if (!supabaseUrl || !supabaseAnonKey) {
+      setLoading(false);
+      toast({
+        title: "Configuration Error",
+        description: "Supabase configuration is missing. Please check your environment variables.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     // Check active session
     const checkSession = async () => {
       setLoading(true);
