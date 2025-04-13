@@ -1,9 +1,16 @@
+
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
+import { toast } from '@/components/ui/sonner';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+
+// Check if we have the required Supabase config
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('Missing Supabase configuration. Make sure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set in your environment variables.');
+}
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
@@ -16,7 +23,9 @@ const AuthCallback = () => {
       try {
         const { data, error } = await supabase.auth.getUser();
         
-        if (error) throw error;
+        if (error) {
+          throw error;
+        }
         
         if (data?.user) {
           // Check if this is a new user that needs onboarding
@@ -25,6 +34,8 @@ const AuthCallback = () => {
             .select('last_period')
             .eq('id', data.user.id)
             .single();
+          
+          toast.success('Successfully signed in!');
           
           if (profile && profile.last_period) {
             // Existing user with period data - send to dashboard
@@ -38,6 +49,7 @@ const AuthCallback = () => {
         }
       } catch (error) {
         console.error('Error in auth callback:', error);
+        toast.error('Authentication failed. Please try again.');
         navigate('/auth');
       }
     };

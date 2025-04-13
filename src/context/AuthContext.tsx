@@ -1,10 +1,14 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { createClient, SupabaseClient, User as SupabaseUser } from '@supabase/supabase-js';
 
 // Create Supabase client
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+
+// Check if we have the required Supabase config
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('Missing Supabase configuration. Make sure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set in your environment variables.');
+}
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
