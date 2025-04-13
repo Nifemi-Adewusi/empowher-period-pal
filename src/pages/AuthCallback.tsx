@@ -2,7 +2,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
-import { toast } from '@/components/ui/sonner';
+import { toast } from '@/hooks/use-toast';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
@@ -35,7 +35,10 @@ const AuthCallback = () => {
             .eq('id', data.user.id)
             .single();
           
-          toast.success('Successfully signed in!');
+          toast({
+            title: "Success",
+            description: "Successfully signed in!",
+          });
           
           if (profile && profile.last_period) {
             // Existing user with period data - send to dashboard
@@ -49,7 +52,11 @@ const AuthCallback = () => {
         }
       } catch (error) {
         console.error('Error in auth callback:', error);
-        toast.error('Authentication failed. Please try again.');
+        toast({
+          title: "Error",
+          description: "Authentication failed. Please try again.",
+          variant: "destructive",
+        });
         navigate('/auth');
       }
     };
