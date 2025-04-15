@@ -2,13 +2,13 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Home, Calendar, User, Settings, LogOut } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
+import { useUser } from '@/context/UserContext';
 
 const Navbar: React.FC = () => {
   const location = useLocation();
-  const { user, logout } = useAuth();
+  const { userData } = useUser();
   
-  if (!user) return null; // Don't show navbar if user is not logged in
+  if (!userData) return null; // Don't show navbar if user is not logged in
   
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg rounded-t-xl z-50">
@@ -26,10 +26,10 @@ const Navbar: React.FC = () => {
           isActive={location.pathname === '/calendar'}
         />
         <NavItem
-          to="/profile"
-          label="Profile"
+          to="/dashboard"
+          label="Dashboard"
           icon={<User size={24} />}
-          isActive={location.pathname === '/profile'}
+          isActive={location.pathname === '/dashboard'}
         />
         <NavItem
           to="/settings"
@@ -37,13 +37,6 @@ const Navbar: React.FC = () => {
           icon={<Settings size={24} />}
           isActive={location.pathname === '/settings'}
         />
-        <button 
-          onClick={logout}
-          className="flex flex-col items-center px-3 py-2 text-gray-400 hover:text-empowher-primary"
-        >
-          <LogOut size={24} />
-          <span className="text-xs mt-1">Logout</span>
-        </button>
       </div>
     </div>
   );

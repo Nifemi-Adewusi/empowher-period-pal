@@ -43,7 +43,7 @@ const Dashboard: React.FC = () => {
       <div className="bg-white shadow-sm">
         <div className="container max-w-md mx-auto px-4 py-6">
           <h1 className="text-2xl font-semibold text-empowher-text">
-            {greeting}, {user.name.split(' ')[0]}
+            {greeting}, {userData.name.split(' ')[0]}
           </h1>
           <div className="flex items-center text-sm text-empowher-text/60 mt-1">
             <CalendarIcon className="h-4 w-4 mr-1" />
