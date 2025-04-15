@@ -1,10 +1,10 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Calendar, User, Settings, LogOut } from 'lucide-react';
+import { Home, Calendar, PieChart, Settings } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 
-const Navbar: React.FC = () => {
+const Navbar = () => {
   const location = useLocation();
   const { userData } = useUser();
   
@@ -26,10 +26,10 @@ const Navbar: React.FC = () => {
           isActive={location.pathname === '/calendar'}
         />
         <NavItem
-          to="/dashboard"
-          label="Dashboard"
-          icon={<User size={24} />}
-          isActive={location.pathname === '/dashboard'}
+          to="/insights"
+          label="Insights"
+          icon={<PieChart size={24} />}
+          isActive={location.pathname === '/insights'}
         />
         <NavItem
           to="/settings"
