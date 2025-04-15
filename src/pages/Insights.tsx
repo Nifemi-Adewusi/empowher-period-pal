@@ -1,34 +1,36 @@
-
 import React from 'react';
 import { useUser } from '@/context/UserContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Activity, Calendar, Droplets } from 'lucide-react';
+import { analyzeSymptoms, type SymptomLog } from '@/utils/symptomAnalyzer';
+import PersonalizedInsights from '@/components/PersonalizedInsights';
 
 const Insights = () => {
   const { userData } = useUser();
 
-  // Sample data - in a real app, this would come from stored symptom history
-  const sampleSymptomData = [
-    { day: 'Day 1', cramps: 3, mood: 2, flow: 4 },
-    { day: 'Day 2', cramps: 4, mood: 3, flow: 5 },
-    { day: 'Day 3', cramps: 2, mood: 4, flow: 3 },
-    { day: 'Day 4', cramps: 1, mood: 4, flow: 2 },
-    { day: 'Day 5', cramps: 0, mood: 5, flow: 1 },
+  // For now, using sample data - in a real app, this would come from your symptom tracking storage
+  const sampleSymptomLogs: SymptomLog[] = [
+    { date: new Date(), symptoms: ['cramps', 'headache'] },
+    { date: new Date(Date.now() - 86400000), symptoms: ['cramps', 'fatigue'] },
+    { date: new Date(Date.now() - 86400000 * 2), symptoms: ['cramps', 'bloating'] },
   ];
+
+  const insights = analyzeSymptoms(sampleSymptomLogs);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-empowher-light/30 pb-16">
-      {/* Header Section */}
       <div className="bg-white shadow-sm">
         <div className="container max-w-md mx-auto px-4 py-6">
           <h1 className="text-2xl font-semibold text-empowher-text">Insights</h1>
-          <p className="text-sm text-empowher-text/60 mt-1">Track your patterns and cycles</p>
+          <p className="text-sm text-empowher-text/60 mt-1">Your personalized health analysis</p>
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="container max-w-md mx-auto px-4 py-4 space-y-6">
+        {/* Personalized Insights Section */}
+        <PersonalizedInsights insights={insights} />
+
         {/* Cycle Overview */}
         <Card>
           <CardHeader>
@@ -72,9 +74,9 @@ const Insights = () => {
           <CardContent>
             <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={sampleSymptomData}>
+                <BarChart data={sampleSymptomLogs}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="day" />
+                  <XAxis dataKey="date" />
                   <YAxis />
                   <Tooltip />
                   <Bar dataKey="cramps" fill="#F472B6" name="Cramps" />
