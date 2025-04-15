@@ -1,20 +1,12 @@
-
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/context/AuthContext';
+import { useUser } from '@/context/UserContext';
 
 const Index: React.FC = () => {
-  const { user } = useAuth();
+  const { userData } = useUser();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    // If user is logged in, redirect to dashboard
-    if (user) {
-      navigate('/dashboard');
-    }
-  }, [user, navigate]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-empowher-light to-white">
@@ -26,30 +18,28 @@ const Index: React.FC = () => {
           </div>
         </div>
         
-        <h1 className="text-4xl sm:text-5xl font-bold text-empowher-text animate-fade-in">
-          EmpowHer <span className="text-empowher-primary">Period Pal</span>
-        </h1>
-        
-        <p className="mt-4 text-xl text-empowher-text/80 max-w-md animate-fade-in" style={{ animationDelay: "0.1s" }}>
-          Track your cycle, understand your body, and embrace your power
-        </p>
-        
-        <div className="mt-8 space-y-4 w-full max-w-xs animate-fade-in" style={{ animationDelay: "0.2s" }}>
-          <Button 
-            className="w-full btn-gradient py-6 text-lg shadow-lg hover:shadow-xl transition-all"
-            onClick={() => navigate('/auth')}
-          >
-            Get Started
-          </Button>
-          
-          <Button 
-            variant="outline" 
-            className="w-full py-6 text-lg border-empowher-primary/30 text-empowher-primary hover:bg-empowher-light/50"
-            onClick={() => navigate('/auth')}
-          >
-            Log In
-          </Button>
-        </div>
+        {userData ? (
+          <>
+            <h1 className="text-4xl sm:text-5xl font-bold text-empowher-text animate-fade-in">
+              Welcome back, <span className="text-empowher-primary">{userData.name}</span>!
+            </h1>
+            <Button 
+              className="mt-8 btn-gradient py-6 text-lg shadow-lg hover:shadow-xl transition-all animate-fade-in w-full max-w-xs"
+              onClick={() => navigate('/dashboard')}
+            >
+              Go to Dashboard
+            </Button>
+          </>
+        ) : (
+          <>
+            <h1 className="text-4xl sm:text-5xl font-bold text-empowher-text animate-fade-in">
+              EmpowHer <span className="text-empowher-primary">Period Pal</span>
+            </h1>
+            <p className="mt-4 text-xl text-empowher-text/80 max-w-md animate-fade-in">
+              Track your cycle, understand your body, and embrace your power
+            </p>
+          </>
+        )}
       </div>
       
       {/* Features Section */}

@@ -1,18 +1,17 @@
-
 import React, { useState, useEffect } from 'react';
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay } from 'date-fns';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { useAuth } from '@/context/AuthContext';
+import { useUser } from '@/context/UserContext';
 import { getDayStatus } from '@/utils/periodCalculator';
 
 const Calendar: React.FC = () => {
-  const { user } = useAuth();
+  const { userData } = useUser();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   
-  if (!user || !user.lastPeriod) {
+  if (!userData || !userData.lastPeriod) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-empowher-light/30">
         <Card className="w-full max-w-md mx-auto">
@@ -25,8 +24,8 @@ const Calendar: React.FC = () => {
     );
   }
   
-  const cycleLength = user.cycleLength || 28;
-  const periodLength = user.periodLength || 5;
+  const cycleLength = userData.cycleLength || 28;
+  const periodLength = userData.periodLength || 5;
   
   const days = eachDayOfInterval({
     start: startOfMonth(currentMonth),
@@ -42,9 +41,9 @@ const Calendar: React.FC = () => {
   };
   
   const getDayClass = (day: Date) => {
-    if (!user?.lastPeriod) return '';
+    if (!userData?.lastPeriod) return '';
     
-    const status = getDayStatus(day, user.lastPeriod, cycleLength, periodLength);
+    const status = getDayStatus(day, userData.lastPeriod, cycleLength, periodLength);
     
     if (status === 'onPeriod') {
       return 'bg-empowher-pink text-empowher-tertiary font-medium';

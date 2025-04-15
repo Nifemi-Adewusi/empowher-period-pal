@@ -6,7 +6,7 @@ import PeriodTracker from '@/components/PeriodTracker';
 import MotivationalQuote from '@/components/MotivationalQuote';
 import Tips from '@/components/Tips';
 import SymptomTracker from '@/components/SymptomTracker';
-import { useAuth } from '@/context/AuthContext';
+import { useUser } from '@/context/UserContext';
 import { getDayStatus } from '@/utils/periodCalculator';
 
 const getGreeting = (): string => {
@@ -17,24 +17,24 @@ const getGreeting = (): string => {
 };
 
 const Dashboard: React.FC = () => {
-  const { user } = useAuth();
+  const { userData } = useUser();
   const [isOnPeriod, setIsOnPeriod] = useState(false);
   const [greeting] = useState(getGreeting());
 
   useEffect(() => {
-    if (user?.lastPeriod) {
+    if (userData?.lastPeriod) {
       const status = getDayStatus(
         new Date(),
-        user.lastPeriod,
-        user.cycleLength || 28,
-        user.periodLength || 5
+        userData.lastPeriod,
+        userData.cycleLength || 28,
+        userData.periodLength || 5
       );
       setIsOnPeriod(status === 'onPeriod');
     }
-  }, [user]);
+  }, [userData]);
 
-  if (!user) {
-    return null; // User should be redirected to auth if not logged in
+  if (!userData) {
+    return null;
   }
 
   return (

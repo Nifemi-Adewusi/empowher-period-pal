@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { format, addDays } from 'date-fns';
 import { Calendar as CalendarIcon, Droplets } from 'lucide-react';
@@ -7,16 +6,16 @@ import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { Calendar } from '@/components/ui/calendar';
-import { useAuth } from '@/context/AuthContext';
+import { useUser } from '@/context/UserContext';
 import { daysUntilNextPeriod } from '@/utils/periodCalculator';
 
 const PeriodTracker: React.FC = () => {
-  const { user, updateProfile } = useAuth();
-  const [date, setDate] = useState<Date | undefined>(user?.lastPeriod);
+  const { userData, setUserData } = useUser();
+  const [date, setDate] = useState<Date | undefined>(userData?.lastPeriod);
   const [isOnPeriod, setIsOnPeriod] = useState<boolean | null>(null);
 
   // If we don't have a last period date, show the date selector
-  if (!user?.lastPeriod && isOnPeriod === null) {
+  if (!userData?.lastPeriod && isOnPeriod === null) {
     return (
       <Card className="card-gradient">
         <CardHeader>
@@ -57,7 +56,7 @@ const PeriodTracker: React.FC = () => {
             className="w-full btn-gradient"
             onClick={() => {
               if (date) {
-                updateProfile({ lastPeriod: date });
+                setUserData({ lastPeriod: date });
                 setIsOnPeriod(false);
               }
             }}
@@ -71,7 +70,7 @@ const PeriodTracker: React.FC = () => {
   }
 
   // If we have asked if they're on their period now
-  if (isOnPeriod !== null && !user?.lastPeriod) {
+  if (isOnPeriod !== null && !userData?.lastPeriod) {
     return (
       <Card className="card-gradient">
         <CardHeader>
@@ -88,7 +87,7 @@ const PeriodTracker: React.FC = () => {
               className={`flex-1 ${isOnPeriod ? 'bg-empowher-primary text-white' : ''}`}
               onClick={() => {
                 setIsOnPeriod(true);
-                updateProfile({ 
+                setUserData({ 
                   lastPeriod: new Date(),
                   cycleLength: 28,
                   periodLength: 5
@@ -103,7 +102,7 @@ const PeriodTracker: React.FC = () => {
               onClick={() => {
                 setIsOnPeriod(false);
                 if (date) {
-                  updateProfile({ 
+                  setUserData({ 
                     lastPeriod: date,
                     cycleLength: 28,
                     periodLength: 5
@@ -120,9 +119,9 @@ const PeriodTracker: React.FC = () => {
   }
 
   // Normal tracker display once we have the info
-  if (user?.lastPeriod) {
-    const cycleLength = user.cycleLength || 28;
-    const daysUntil = daysUntilNextPeriod(user.lastPeriod, cycleLength);
+  if (userData?.lastPeriod) {
+    const cycleLength = userData.cycleLength || 28;
+    const daysUntil = daysUntilNextPeriod(userData.lastPeriod, cycleLength);
     const nextPeriodDate = addDays(new Date(), daysUntil);
     
     return (
@@ -166,7 +165,7 @@ const PeriodTracker: React.FC = () => {
             variant="outline" 
             className="w-full border-empowher-primary/50 text-empowher-primary hover:bg-empowher-light/50 hover:text-empowher-primary"
             onClick={() => {
-              updateProfile({ lastPeriod: new Date() });
+              setUserData({ lastPeriod: new Date() });
             }}
           >
             Log Period Today
