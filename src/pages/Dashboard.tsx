@@ -67,7 +67,7 @@ const Dashboard: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-rose-50 pb-20">
       {/* Beautiful Header with Animation */}
       <div className="bg-gradient-to-r from-empowher-primary via-empowher-secondary to-purple-600 text-white shadow-2xl relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.1\"%3E%3Cpath d=\"M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20z\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
+        <div className="absolute inset-0 opacity-20"></div>
         
         <div className="container max-w-md mx-auto px-4 py-8 relative">
           <div className={`text-center transition-all duration-1000 ${showCelebration ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
@@ -183,7 +183,7 @@ const Dashboard: React.FC = () => {
           {/* Celebration Message */}
           {showCelebration && (
             <Card className="border-0 shadow-xl bg-gradient-to-r from-pink-400 via-purple-400 to-rose-400 text-white animate-fade-in overflow-hidden relative">
-              <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.1\"%3E%3Cpath d=\"M10 0l2 6h6l-5 4 2 6-5-4-5 4 2-6-5-4h6z\"/%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
+              <div className="absolute inset-0 opacity-20"></div>
               <CardContent className="p-6 text-center relative">
                 <div className="flex items-center justify-center mb-3">
                   <Star className="h-6 w-6 text-yellow-300 animate-pulse mr-2" />
