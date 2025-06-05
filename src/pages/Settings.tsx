@@ -33,11 +33,21 @@ const Settings = () => {
       return;
     }
 
+    const cycleLengthNum = parseInt(cycleLength, 10);
+    if (cycleLengthNum < 19 || cycleLengthNum > 28) {
+      toast({
+        title: "Invalid cycle length",
+        description: "Cycle length must be between 19 and 28 days.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setUserData({
       ...userData,
       name: name.trim(),
       lastPeriod,
-      cycleLength: parseInt(cycleLength, 10),
+      cycleLength: cycleLengthNum,
       periodLength: parseInt(periodLength, 10),
     });
 
@@ -104,13 +114,13 @@ const Settings = () => {
             <Input
               id="cycleLength"
               type="number"
-              min="21"
-              max="35"
+              min="19"
+              max="28"
               value={cycleLength}
               onChange={(e) => setCycleLength(e.target.value)}
             />
             <p className="text-xs text-empowher-text/60">
-              Average menstrual cycle length is 28 days
+              Your cycle can be anywhere from 19 to 28 days - every woman is unique! 💖
             </p>
           </div>
 

@@ -36,6 +36,10 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (parsed.lastPeriod) {
         parsed.lastPeriod = new Date(parsed.lastPeriod);
       }
+      // Ensure cycle length is within new range (19-28), default to 28 if outside range
+      if (parsed.cycleLength && (parsed.cycleLength < 19 || parsed.cycleLength > 28)) {
+        parsed.cycleLength = 28;
+      }
       setUserDataState(parsed);
     } else {
       setShowNameDialog(true);
@@ -51,6 +55,11 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         periodLength: data.periodLength || 5,
         ...data
       };
+      
+      // Ensure cycle length is within new range (19-28)
+      if (newData.cycleLength < 19 || newData.cycleLength > 28) {
+        newData.cycleLength = 28;
+      }
       
       // Store in localStorage, converting Date to ISO string
       localStorage.setItem(STORAGE_KEY, JSON.stringify({
