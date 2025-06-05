@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Heart, ThumbsUp, X, ChevronRight } from 'lucide-react';
+import { Heart, ThumbsUp, X, ChevronRight, Sparkles } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from "@/hooks/use-toast";
@@ -11,64 +11,89 @@ type Tip = {
   content: string;
   source: string;
   category: 'cramps' | 'mood' | 'energy' | 'sleep' | 'general';
+  empathyNote: string;
 };
 
 const periodTips: Tip[] = [
   {
     id: '1',
-    title: 'Heat Therapy for Cramps',
-    content: 'Apply a heating pad, hot water bottle, or warm towel to your lower abdomen or back to help relax the muscles and reduce cramping. Research shows that heat therapy can be as effective as over-the-counter pain medications.',
+    title: 'Gentle Heat Therapy for Comfort',
+    content: 'Apply a heating pad, hot water bottle, or warm towel to your lower abdomen or back. The warmth helps relax your muscles and can provide the gentle relief you deserve. Research shows heat therapy can be as effective as pain medications.',
     source: 'Journal of Physiotherapy',
-    category: 'cramps'
+    category: 'cramps',
+    empathyNote: 'Your pain is real and valid. You deserve comfort and relief. 💕'
   },
   {
     id: '2',
-    title: 'Anti-inflammatory Foods',
-    content: 'Incorporate anti-inflammatory foods like leafy greens, berries, fatty fish, and nuts into your diet. These foods contain omega-3 fatty acids and antioxidants that may help reduce inflammation and period pain.',
+    title: 'Nourishing Anti-inflammatory Foods',
+    content: 'Be kind to your body with healing foods like leafy greens, berries, fatty fish, and nuts. These contain omega-3s and antioxidants that work gently to reduce inflammation and support your body through this time.',
     source: 'American Journal of Clinical Nutrition',
-    category: 'cramps'
+    category: 'cramps',
+    empathyNote: 'Nourishing yourself is an act of self-love. You deserve to feel good from the inside out. 🌿'
   },
   {
     id: '3',
-    title: 'Gentle Exercise',
-    content: 'Light exercises like walking, stretching, or yoga can increase blood flow and release endorphins, which can help alleviate menstrual pain. Focus on gentle movements rather than intense workouts.',
+    title: 'Movement That Feels Good',
+    content: 'Listen to your body and try gentle movements like slow walks, soft stretching, or restorative yoga. Movement releases natural feel-good chemicals and can ease discomfort when done with love and patience.',
     source: 'Journal of Physical Therapy Science',
-    category: 'energy'
+    category: 'energy',
+    empathyNote: 'Honor what your body needs today. Some days it\'s rest, some days it\'s gentle movement. Both are perfect. ✨'
   },
   {
     id: '4',
-    title: 'Stay Hydrated',
-    content: 'Drinking plenty of water can help reduce bloating and alleviate cramps. Aim for at least 8 glasses of water throughout the day, and consider warm herbal teas like chamomile or ginger for additional benefits.',
+    title: 'Hydration as Self-Care',
+    content: 'Drinking plenty of water is like giving your body a gentle hug from the inside. Aim for 8 glasses throughout the day, and try warm herbal teas like chamomile or ginger for extra comfort and bloating relief.',
     source: 'International Journal of Nursing Studies',
-    category: 'general'
+    category: 'general',
+    empathyNote: 'Taking care of your basic needs is a beautiful way to show yourself love. You\'re worth this care. 💧'
   },
   {
     id: '5',
-    title: 'Magnesium-Rich Foods',
-    content: 'Foods rich in magnesium like dark chocolate, bananas, avocados, and nuts may help reduce menstrual cramps and improve mood. Magnesium helps relax muscles and regulates neurotransmitters that reduce pain.',
+    title: 'Magnesium-Rich Comfort Foods',
+    content: 'Treat yourself gently with magnesium-rich foods like dark chocolate (yes, chocolate!), bananas, avocados, and nuts. These natural mood-boosters help relax muscles and calm your nervous system.',
     source: 'American Journal of Obstetrics and Gynecology',
-    category: 'mood'
+    category: 'mood',
+    empathyNote: 'Your cravings often tell you what your body needs. Trust yourself and enjoy nourishing treats guilt-free. 🍫'
   },
   {
     id: '6',
-    title: 'Sleep Position Matters',
-    content: 'Try sleeping in the fetal position with your knees tucked into your chest to reduce pressure on your abdominal muscles, potentially easing cramps. A pillow between your knees can also help align your hips and reduce back strain.',
+    title: 'Restful Sleep Positions',
+    content: 'Try curling up in the fetal position with your knees gently tucked toward your chest, or place a soft pillow between your knees. These positions can ease pressure and help you find the rest you so deeply deserve.',
     source: 'Journal of Sleep Research',
-    category: 'sleep'
+    category: 'sleep',
+    empathyNote: 'Quality rest is not selfish - it\'s necessary. Your body is working hard and needs this recovery time. 🌙'
   },
   {
     id: '7',
-    title: 'Mindfulness and Relaxation',
-    content: 'Practice deep breathing, meditation, or progressive muscle relaxation to help manage period pain and reduce stress. Studies show that these techniques can help modulate pain perception and reduce anxiety.',
+    title: 'Mindful Breathing and Calm',
+    content: 'When overwhelm hits, try deep, slow breathing, gentle meditation, or progressive muscle relaxation. These practices help your nervous system find calm and can significantly reduce both physical and emotional pain.',
     source: 'Journal of Alternative and Complementary Medicine',
-    category: 'mood'
+    category: 'mood',
+    empathyNote: 'Your mental health matters just as much as your physical health. Taking time to breathe is taking time to heal. 🌸'
   },
   {
     id: '8',
-    title: 'Acupressure Points',
-    content: 'Try applying pressure to specific points on your body, such as four finger widths below your belly button or the fleshy part between your thumb and index finger, for 1-3 minutes to potentially relieve cramps.',
+    title: 'Gentle Acupressure Relief',
+    content: 'Try applying gentle pressure to the spot four finger widths below your belly button, or massage the soft area between your thumb and index finger for 1-3 minutes. These ancient techniques can offer natural comfort.',
     source: 'Evidence-Based Complementary and Alternative Medicine',
-    category: 'cramps'
+    category: 'cramps',
+    empathyNote: 'Your body has amazing healing wisdom. Sometimes the gentlest touch can bring the greatest relief. 🤲'
+  },
+  {
+    id: '9',
+    title: 'Emotional Permission Slip',
+    content: 'It\'s completely normal to feel more sensitive, emotional, or overwhelmed during your cycle. Your hormones are doing important work, and your feelings are valid. Allow yourself to feel without judgment.',
+    source: 'Psychological Research',
+    category: 'mood',
+    empathyNote: 'You\'re not "too much" or "too sensitive." You\'re human, and your emotions deserve respect and care. 💝'
+  },
+  {
+    id: '10',
+    title: 'Creating Your Comfort Sanctuary',
+    content: 'Make your space as cozy as possible - soft blankets, dimmed lights, your favorite tea, calming scents. Your environment can be a powerful tool for healing and comfort during difficult days.',
+    source: 'Environmental Psychology',
+    category: 'general',
+    empathyNote: 'You deserve a space that feels safe and nurturing. Creating comfort for yourself is an act of radical self-love. 🏡'
   }
 ];
 
@@ -96,14 +121,14 @@ const Tips: React.FC<TipsProps> = ({ category = 'general' }) => {
     if (!savedTips.includes(currentTip.id)) {
       setSavedTips([...savedTips, currentTip.id]);
       toast({
-        title: "Tip Saved!",
-        description: "You can find this in your saved tips collection.",
+        title: "Tip Saved with Love! 💕",
+        description: "You can find this gentle reminder in your saved collection.",
       });
     } else {
       setSavedTips(savedTips.filter(id => id !== currentTip.id));
       toast({
         title: "Tip Removed",
-        description: "This tip has been removed from your saved collection.",
+        description: "This tip has been removed from your collection.",
       });
     }
   };
@@ -111,26 +136,41 @@ const Tips: React.FC<TipsProps> = ({ category = 'general' }) => {
   const isSaved = savedTips.includes(currentTip.id);
 
   return (
-    <Card className="w-full overflow-hidden shadow-lg border-empowher-light">
-      <CardHeader className="bg-empowher-primary/10 pb-2">
+    <Card className="w-full overflow-hidden shadow-lg border-empowher-light bg-gradient-to-br from-white to-pink-50/30">
+      <CardHeader className="bg-gradient-to-r from-empowher-primary/10 to-pink-100/50 pb-3">
         <CardTitle className="flex items-center text-empowher-primary">
-          <Heart className="mr-2 h-5 w-5" />
-          Period Wellness Tip
+          <Heart className="mr-2 h-5 w-5 animate-pulse" />
+          Gentle Care & Comfort Tips
         </CardTitle>
-        <CardDescription>Research-backed advice to feel better</CardDescription>
+        <CardDescription className="text-empowher-text/70">
+          Research-backed advice wrapped in love and understanding 💝
+        </CardDescription>
       </CardHeader>
       
-      <CardContent className="pt-6">
-        <h3 className="text-lg font-semibold mb-2">{currentTip.title}</h3>
-        <p className="text-empowher-text/80">{currentTip.content}</p>
-        <p className="text-xs text-empowher-text/60 mt-3">Source: {currentTip.source}</p>
+      <CardContent className="pt-6 space-y-4">
+        <h3 className="text-lg font-semibold mb-3 text-empowher-primary">{currentTip.title}</h3>
+        <p className="text-empowher-text/80 leading-relaxed">{currentTip.content}</p>
+        
+        {/* Empathy Note */}
+        <div className="bg-gradient-to-r from-pink-50 to-purple-50 p-4 rounded-lg border-l-4 border-pink-300">
+          <div className="flex items-start gap-2">
+            <Sparkles className="h-4 w-4 text-pink-500 mt-0.5 flex-shrink-0" />
+            <p className="text-sm text-empowher-text/90 italic font-medium">
+              {currentTip.empathyNote}
+            </p>
+          </div>
+        </div>
+        
+        <p className="text-xs text-empowher-text/60 mt-3">
+          <strong>Backed by research:</strong> {currentTip.source}
+        </p>
       </CardContent>
       
-      <CardFooter className="flex justify-between">
+      <CardFooter className="flex justify-between bg-gradient-to-r from-pink-50/30 to-purple-50/30">
         <Button 
           variant="ghost" 
           size="sm" 
-          className="text-empowher-primary hover:bg-empowher-light/50"
+          className="text-empowher-primary hover:bg-empowher-light/50 transition-all hover:scale-105"
           onClick={handleSaveTip}
         >
           {isSaved ? (
@@ -141,7 +181,7 @@ const Tips: React.FC<TipsProps> = ({ category = 'general' }) => {
           ) : (
             <>
               <ThumbsUp className="mr-1 h-4 w-4" />
-              Save Tip
+              Save This Love
             </>
           )}
         </Button>
@@ -149,10 +189,10 @@ const Tips: React.FC<TipsProps> = ({ category = 'general' }) => {
         <Button 
           variant="ghost" 
           size="sm"
-          className="text-empowher-primary hover:bg-empowher-light/50"
+          className="text-empowher-primary hover:bg-empowher-light/50 transition-all hover:scale-105"
           onClick={handleNextTip}
         >
-          Next Tip
+          More Care Tips
           <ChevronRight className="ml-1 h-4 w-4" />
         </Button>
       </CardFooter>

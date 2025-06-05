@@ -5,35 +5,51 @@ import { Quote } from 'lucide-react';
 
 const quotes = [
   {
-    text: "You are strong, resilient, and capable of handling whatever today brings.",
+    text: "Your pain is valid, your feelings matter, and you are so much stronger than you realize. Take it one breath at a time, beautiful soul.",
     author: "EmpowHer"
   },
   {
-    text: "Your body is a miracle that deserves to be celebrated, even on the tough days.",
+    text: "It's okay to not be okay today. Your body is doing incredible work, and you deserve all the gentleness in the world right now.",
     author: "EmpowHer"
   },
   {
-    text: "Take a deep breath. You've got this. Your strength is greater than any discomfort.",
+    text: "You are not broken, you are not too much, and you are not alone. Millions of women are walking this journey with you, sending you love.",
     author: "EmpowHer"
   },
   {
-    text: "Embrace your cycle as a superpower that connects you to your body's wisdom.",
+    text: "Rest is not giving up - it's honoring your body's needs. You're allowed to take up space, feel your feelings, and ask for help.",
     author: "EmpowHer"
   },
   {
-    text: "Self-care isn't selfish. It's necessary, especially during your period.",
+    text: "This discomfort is temporary, but your strength is permanent. You've survived every difficult day so far - that's 100% success rate.",
     author: "EmpowHer"
   },
   {
-    text: "You are not your hormones. You are a powerful force capable of amazing things.",
+    text: "Your cycle connects you to the rhythm of the moon, the tides, and generations of powerful women before you. You carry ancient wisdom.",
     author: "EmpowHer"
   },
   {
-    text: "Your worth is not measured by your productivity. Rest is revolutionary.",
+    text: "Be patient with yourself today. Healing isn't linear, and neither is your journey. Every small step counts, every breath matters.",
     author: "EmpowHer"
   },
   {
-    text: "Honor your body's needs today. You deserve that kindness.",
+    text: "You don't have to earn your worth through productivity. You are valuable simply because you exist. Rest without guilt, love.",
+    author: "EmpowHer"
+  },
+  {
+    text: "Your sensitivity is a superpower, not a weakness. In a world that often feels harsh, your gentleness is revolutionary.",
+    author: "EmpowHer"
+  },
+  {
+    text: "When the world feels heavy, remember: you are loved beyond measure, you matter deeply, and tomorrow holds new possibilities.",
+    author: "EmpowHer"
+  },
+  {
+    text: "It's okay to cry, to feel overwhelmed, to need extra comfort. Your emotions are messengers - listen to them with compassion.",
+    author: "EmpowHer"
+  },
+  {
+    text: "You are writing a story of resilience with every cycle you navigate. Each month, you prove to yourself that you can overcome anything.",
     author: "EmpowHer"
   }
 ];
@@ -75,8 +91,8 @@ const MotivationalQuote: React.FC<MotivationalQuoteProps> = ({ onPeriod = false 
             <Quote className="h-6 w-6 text-empowher-primary" />
           </div>
           <div className={`transition-opacity duration-500 ${animate ? 'opacity-100' : 'opacity-0'}`}>
-            <p className="text-lg font-medium text-empowher-text">"{quote.text}"</p>
-            <p className="text-sm mt-2 text-empowher-text/70">- {quote.author}</p>
+            <p className="text-lg font-medium text-empowher-text leading-relaxed">"{quote.text}"</p>
+            <p className="text-sm mt-3 text-empowher-text/70 italic">- {quote.author} 💕</p>
           </div>
         </div>
       </CardContent>

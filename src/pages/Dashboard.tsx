@@ -74,7 +74,7 @@ const Dashboard: React.FC = () => {
             <div className="flex items-center justify-center mb-4">
               {getGreetingIcon()}
               <h1 className="text-3xl font-bold ml-3">
-                {greeting}, {userData.name.split(' ')[0]}!
+                {greeting}, beautiful {userData.name.split(' ')[0]}!
               </h1>
               <div className="ml-3 text-3xl animate-bounce">
                 {getMoodEmojis()[currentMoodIndex]}
@@ -86,12 +86,12 @@ const Dashboard: React.FC = () => {
               <span>{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</span>
             </div>
 
-            {/* Dynamic Status Message */}
+            {/* Enhanced Dynamic Status Message */}
             <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4">
               <p className="text-lg font-medium">
                 {isOnPeriod 
-                  ? "You're on your period - you're incredibly strong! 💪✨" 
-                  : "You're glowing today, beautiful! 🌟💖"
+                  ? "You're on your period - and you're handling it with such grace and strength. Take all the time you need, love. 💪✨" 
+                  : "You're absolutely radiant today! Your body is doing amazing work, and you deserve to feel celebrated. 🌟💖"
                 }
               </p>
             </div>
@@ -122,31 +122,36 @@ const Dashboard: React.FC = () => {
             <SymptomTracker />
           </div>
           
-          {/* Mood Insights Card */}
+          {/* Enhanced Mood Insights Card */}
           <Card className="border-0 shadow-xl bg-gradient-to-br from-white to-purple-50 animate-fade-in" style={{ animationDelay: "0.25s" }}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
                 <Heart className="h-5 w-5 text-pink-500 animate-pulse" />
-                Your Mood Journey
+                Your Beautiful Emotional Journey
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-4 gap-3">
-                {['😊', '😌', '💪', '✨'].map((emoji, index) => (
+                {[
+                  { emoji: '😊', label: 'Joyful', color: 'from-yellow-100 to-orange-100' },
+                  { emoji: '😌', label: 'Peaceful', color: 'from-blue-100 to-cyan-100' },
+                  { emoji: '💪', label: 'Powerful', color: 'from-purple-100 to-pink-100' },
+                  { emoji: '✨', label: 'Magical', color: 'from-pink-100 to-rose-100' }
+                ].map((mood, index) => (
                   <div 
                     key={index} 
-                    className="text-center p-3 rounded-xl bg-gradient-to-br from-pink-100 to-purple-100 hover:from-pink-200 hover:to-purple-200 transition-all duration-300 hover:scale-105 cursor-pointer"
+                    className={`text-center p-3 rounded-xl bg-gradient-to-br ${mood.color} hover:scale-105 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md`}
                   >
-                    <div className="text-2xl mb-1">{emoji}</div>
-                    <div className="text-xs text-empowher-text/70">
-                      {['Happy', 'Calm', 'Strong', 'Radiant'][index]}
+                    <div className="text-2xl mb-1">{mood.emoji}</div>
+                    <div className="text-xs text-empowher-text/70 font-medium">
+                      {mood.label}
                     </div>
                   </div>
                 ))}
               </div>
               <div className="mt-4 text-center">
-                <p className="text-sm text-empowher-text/80">
-                  Track your daily mood to discover patterns and celebrate your emotional journey! 🌈
+                <p className="text-sm text-empowher-text/80 leading-relaxed">
+                  Every emotion you feel is valid and beautiful. Track your feelings with love and watch your inner wisdom unfold. 🌈💕
                 </p>
               </div>
             </CardContent>
@@ -165,8 +170,8 @@ const Dashboard: React.FC = () => {
               onClick={() => navigate('/calendar')}
             >
               <CalendarIcon className="h-8 w-8 text-empowher-primary mb-2 group-hover:scale-110 transition-transform" />
-              <span className="text-empowher-primary text-lg font-semibold mb-1">Calendar</span>
-              <span className="text-xs text-empowher-text/60">View your beautiful cycle</span>
+              <span className="text-empowher-primary text-lg font-semibold mb-1">Your Calendar</span>
+              <span className="text-xs text-empowher-text/60">Celebrate your beautiful cycle</span>
             </Button>
             
             <Button 
@@ -175,12 +180,12 @@ const Dashboard: React.FC = () => {
               onClick={() => navigate('/insights')}
             >
               <TrendingUp className="h-8 w-8 text-pink-500 mb-2 group-hover:scale-110 transition-transform" />
-              <span className="text-pink-500 text-lg font-semibold mb-1">Insights</span>
-              <span className="text-xs text-empowher-text/60">Discover your patterns</span>
+              <span className="text-pink-500 text-lg font-semibold mb-1">Your Insights</span>
+              <span className="text-xs text-empowher-text/60">Discover your amazing patterns</span>
             </Button>
           </div>
 
-          {/* Celebration Message */}
+          {/* Enhanced Celebration Message */}
           {showCelebration && (
             <Card className="border-0 shadow-xl bg-gradient-to-r from-pink-400 via-purple-400 to-rose-400 text-white animate-fade-in overflow-hidden relative">
               <div className="absolute inset-0 opacity-20"></div>
@@ -190,9 +195,9 @@ const Dashboard: React.FC = () => {
                   <Sparkles className="h-6 w-6 text-yellow-300 animate-pulse" />
                   <Star className="h-6 w-6 text-yellow-300 animate-pulse ml-2" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">You're Doing Amazing! ✨</h3>
-                <p className="text-white/90">
-                  Every day of tracking is a step towards understanding your beautiful, unique cycle. Keep shining! 🌟
+                <h3 className="text-xl font-bold mb-3">You're Absolutely Incredible! ✨</h3>
+                <p className="text-white/90 leading-relaxed">
+                  Every day you show up for yourself is a victory worth celebrating. Your dedication to understanding and honoring your body is truly beautiful. You inspire us! 🌟💕
                 </p>
               </CardContent>
             </Card>
