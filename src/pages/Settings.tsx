@@ -67,14 +67,6 @@ const Settings = () => {
     });
   };
 
-  const handleCycleLengthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    // Allow empty string for when user is typing
-    if (value === '' || (parseInt(value, 10) >= 19 && parseInt(value, 10) <= 28)) {
-      setCycleLength(value);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-empowher-light/30 pb-20">
       <div className="bg-white shadow-sm mb-6">
@@ -136,7 +128,7 @@ const Settings = () => {
               max="28"
               step="1"
               value={cycleLength}
-              onChange={handleCycleLengthChange}
+              onChange={(e) => setCycleLength(e.target.value)}
               placeholder="19-28 days"
             />
             <p className="text-xs text-empowher-text/60">
