@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { format, addDays } from 'date-fns';
 import { Calendar as CalendarIcon, Droplets } from 'lucide-react';
@@ -7,7 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { cn } from '@/lib/utils';
 import { Calendar } from '@/components/ui/calendar';
 import { useUser } from '@/context/UserContext';
-import { daysUntilNextPeriod } from '@/utils/periodCalculator';
+import { daysUntilNextPeriod, getCurrentCycleDay } from '@/utils/periodCalculator';
 
 const PeriodTracker: React.FC = () => {
   const { userData, setUserData } = useUser();
@@ -122,6 +123,7 @@ const PeriodTracker: React.FC = () => {
   if (userData?.lastPeriod) {
     const cycleLength = userData.cycleLength || 28;
     const daysUntil = daysUntilNextPeriod(userData.lastPeriod, cycleLength);
+    const currentCycleDay = getCurrentCycleDay(userData.lastPeriod, cycleLength);
     const nextPeriodDate = addDays(new Date(), daysUntil);
     
     return (
@@ -129,7 +131,7 @@ const PeriodTracker: React.FC = () => {
         <div className="bg-gradient-to-r from-empowher-primary to-empowher-secondary text-white p-6">
           <div className="flex justify-between items-center">
             <div>
-              <h3 className="text-2xl font-semibold">Cycle Day {cycleLength - daysUntil + 1}</h3>
+              <h3 className="text-2xl font-semibold">Cycle Day {currentCycleDay}</h3>
               <p className="text-white/80">of your {cycleLength}-day cycle</p>
             </div>
             <div className="bg-white/20 p-3 rounded-full">
@@ -154,7 +156,7 @@ const PeriodTracker: React.FC = () => {
             <div className="w-full bg-gray-200 rounded-full h-2.5">
               <div 
                 className="bg-gradient-to-r from-empowher-primary to-empowher-secondary h-2.5 rounded-full" 
-                style={{ width: `${(1 - daysUntil / cycleLength) * 100}%` }}
+                style={{ width: `${(currentCycleDay / cycleLength) * 100}%` }}
               ></div>
             </div>
           </div>
