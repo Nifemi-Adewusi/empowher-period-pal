@@ -34,10 +34,20 @@ const Settings = () => {
     }
 
     const cycleLengthNum = parseInt(cycleLength, 10);
-    if (cycleLengthNum < 19 || cycleLengthNum > 28) {
+    if (isNaN(cycleLengthNum) || cycleLengthNum < 19 || cycleLengthNum > 28) {
       toast({
         title: "Invalid cycle length",
         description: "Cycle length must be between 19 and 28 days.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const periodLengthNum = parseInt(periodLength, 10);
+    if (isNaN(periodLengthNum) || periodLengthNum < 3 || periodLengthNum > 7) {
+      toast({
+        title: "Invalid period length",
+        description: "Period length must be between 3 and 7 days.",
         variant: "destructive",
       });
       return;
@@ -48,13 +58,21 @@ const Settings = () => {
       name: name.trim(),
       lastPeriod,
       cycleLength: cycleLengthNum,
-      periodLength: parseInt(periodLength, 10),
+      periodLength: periodLengthNum,
     });
 
     toast({
       title: "Settings updated",
       description: "Your changes have been saved successfully.",
     });
+  };
+
+  const handleCycleLengthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Allow empty string for when user is typing
+    if (value === '' || (parseInt(value, 10) >= 19 && parseInt(value, 10) <= 28)) {
+      setCycleLength(value);
+    }
   };
 
   return (
@@ -116,8 +134,10 @@ const Settings = () => {
               type="number"
               min="19"
               max="28"
+              step="1"
               value={cycleLength}
-              onChange={(e) => setCycleLength(e.target.value)}
+              onChange={handleCycleLengthChange}
+              placeholder="19-28 days"
             />
             <p className="text-xs text-empowher-text/60">
               Your cycle can be anywhere from 19 to 28 days - every woman is unique! 💖
@@ -132,8 +152,10 @@ const Settings = () => {
               type="number"
               min="3"
               max="7"
+              step="1"
               value={periodLength}
               onChange={(e) => setPeriodLength(e.target.value)}
+              placeholder="3-7 days"
             />
             <p className="text-xs text-empowher-text/60">
               Average period length is 5 days
