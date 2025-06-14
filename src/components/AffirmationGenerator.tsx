@@ -24,18 +24,26 @@ const AffirmationGenerator: React.FC = () => {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const generateNewAffirmation = () => {
+    console.log('Generate button clicked!');
+    console.log('Current index:', currentAffirmationIndex);
+    
     setIsGenerating(true);
+    
     setTimeout(() => {
       // Get a different affirmation (not the current one)
       let newIndex;
       do {
         newIndex = Math.floor(Math.random() * affirmations.length);
+        console.log('Generated new index:', newIndex);
       } while (newIndex === currentAffirmationIndex && affirmations.length > 1);
       
+      console.log('Setting new index:', newIndex);
       setCurrentAffirmationIndex(newIndex);
       setIsGenerating(false);
     }, 500);
   };
+
+  console.log('Current affirmation:', affirmations[currentAffirmationIndex]);
 
   return (
     <Card className="border-none shadow-lg bg-gradient-to-br from-yellow-50 to-pink-50">
