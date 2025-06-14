@@ -20,14 +20,19 @@ const affirmations = [
 ];
 
 const AffirmationGenerator: React.FC = () => {
-  const [currentAffirmation, setCurrentAffirmation] = useState(affirmations[0]);
+  const [currentAffirmationIndex, setCurrentAffirmationIndex] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
 
   const generateNewAffirmation = () => {
     setIsGenerating(true);
     setTimeout(() => {
-      const randomIndex = Math.floor(Math.random() * affirmations.length);
-      setCurrentAffirmation(affirmations[randomIndex]);
+      // Get a different affirmation (not the current one)
+      let newIndex;
+      do {
+        newIndex = Math.floor(Math.random() * affirmations.length);
+      } while (newIndex === currentAffirmationIndex && affirmations.length > 1);
+      
+      setCurrentAffirmationIndex(newIndex);
       setIsGenerating(false);
     }, 500);
   };
@@ -46,7 +51,7 @@ const AffirmationGenerator: React.FC = () => {
           <p className={`text-lg font-medium text-gray-700 leading-relaxed transition-opacity duration-300 ${
             isGenerating ? 'opacity-50' : 'opacity-100'
           }`}>
-            {currentAffirmation}
+            {affirmations[currentAffirmationIndex]}
           </p>
         </div>
         

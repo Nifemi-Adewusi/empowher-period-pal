@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Heart } from 'lucide-react';
 
 const FloatingHearts: React.FC = () => {
@@ -29,37 +29,42 @@ const FloatingHearts: React.FC = () => {
   };
 
   return (
-    <div 
-      className="fixed inset-0 pointer-events-none z-40"
-      onClick={handleClick}
-      style={{ pointerEvents: 'auto' }}
-    >
-      {hearts.map(heart => (
-        <Heart
-          key={heart.id}
-          className="absolute text-pink-500 animate-bounce pointer-events-none"
-          style={{
-            left: heart.x,
-            top: heart.y,
-            animation: 'float-up 3s ease-out forwards',
-            fontSize: `${Math.random() * 20 + 15}px`
-          }}
-        />
-      ))}
-      
-      <style jsx>{`
-        @keyframes float-up {
-          0% {
-            transform: translateY(0) scale(1);
-            opacity: 1;
+    <>
+      <style>
+        {`
+          @keyframes float-up {
+            0% {
+              transform: translateY(0) scale(1);
+              opacity: 1;
+            }
+            100% {
+              transform: translateY(-200px) scale(0.5);
+              opacity: 0;
+            }
           }
-          100% {
-            transform: translateY(-200px) scale(0.5);
-            opacity: 0;
+          .floating-heart {
+            animation: float-up 3s ease-out forwards;
           }
-        }
-      `}</style>
-    </div>
+        `}
+      </style>
+      <div 
+        className="fixed inset-0 pointer-events-none z-40"
+        onClick={handleClick}
+        style={{ pointerEvents: 'auto' }}
+      >
+        {hearts.map(heart => (
+          <Heart
+            key={heart.id}
+            className="absolute text-pink-500 pointer-events-none floating-heart"
+            style={{
+              left: heart.x,
+              top: heart.y,
+              fontSize: `${Math.random() * 20 + 15}px`
+            }}
+          />
+        ))}
+      </div>
+    </>
   );
 };
 
