@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -26,20 +25,25 @@ const AffirmationGenerator: React.FC = () => {
 
   const generateNewAffirmation = () => {
     console.log('Generate button clicked!');
-    console.log('Current index:', currentAffirmationIndex);
+    console.log('Current index before:', currentAffirmationIndex);
     
     setIsGenerating(true);
     setShowSparkles(true);
     
     setTimeout(() => {
-      // Get a different affirmation (not the current one)
-      let newIndex;
-      do {
-        newIndex = Math.floor(Math.random() * affirmations.length);
-        console.log('Generated new index:', newIndex);
-      } while (newIndex === currentAffirmationIndex && affirmations.length > 1);
+      // Create array of available indices (excluding current)
+      const availableIndices = affirmations
+        .map((_, index) => index)
+        .filter(index => index !== currentAffirmationIndex);
       
-      console.log('Setting new index:', newIndex);
+      // Pick random index from available options
+      const randomIndex = Math.floor(Math.random() * availableIndices.length);
+      const newIndex = availableIndices[randomIndex];
+      
+      console.log('Available indices:', availableIndices);
+      console.log('Selected new index:', newIndex);
+      console.log('New affirmation:', affirmations[newIndex]);
+      
       setCurrentAffirmationIndex(newIndex);
       setIsGenerating(false);
       
@@ -48,7 +52,7 @@ const AffirmationGenerator: React.FC = () => {
     }, 800);
   };
 
-  console.log('Current affirmation:', affirmations[currentAffirmationIndex]);
+  console.log('Rendering with current affirmation:', affirmations[currentAffirmationIndex]);
 
   return (
     <div className="relative">
