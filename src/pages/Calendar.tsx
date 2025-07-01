@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay } from 'date-fns';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Sparkles, Heart, Droplets, Sun, Moon, Star, Zap, Crown, Flower } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -14,6 +14,7 @@ const Calendar: React.FC = () => {
   const [hoveredDay, setHoveredDay] = useState<Date | null>(null);
   const [showMagic, setShowMagic] = useState(false);
   const [cycleQuote, setCycleQuote] = useState("Your cycle is your superpower! 🌟");
+  const calendarRef = useRef<HTMLDivElement>(null);
   
   const empoweringQuotes = [
     "Your cycle is your superpower! 🌟",
@@ -34,6 +35,24 @@ const Calendar: React.FC = () => {
     }, 4000);
     return () => clearInterval(interval);
   }, []);
+
+  // Handle click outside to close selected day details
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (calendarRef.current && !calendarRef.current.contains(event.target as Node) && selectedDay) {
+        console.log('Clicked outside calendar, closing selected day details');
+        setSelectedDay(null);
+      }
+    };
+
+    if (selectedDay) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [selectedDay]);
   
   if (!userData || !userData.lastPeriod) {
     return (
@@ -206,7 +225,7 @@ const Calendar: React.FC = () => {
         </div>
       </div>
 
-      <div className="container max-w-md mx-auto px-4 py-6 space-y-6">
+      <div className="container max-w-md mx-auto px-4 py-6 space-y-6" ref={calendarRef}>
         {/* Main Calendar Card */}
         <Card className="border-0 shadow-2xl bg-white/95 backdrop-blur-sm overflow-hidden relative">
           <div className="absolute inset-0 bg-gradient-to-br from-pink-50/50 to-purple-50/50"></div>
