@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay } from 'date-fns';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Sparkles, Heart, Droplets, Sun, Moon, Star, Zap, Crown, Flower } from 'lucide-react';
@@ -74,26 +73,40 @@ const Calendar: React.FC = () => {
   
   const prevMonth = () => {
     setCurrentMonth(subMonths(currentMonth, 1));
+    setSelectedDay(null); // Clear selection when changing months
   };
   
   const nextMonth = () => {
     setCurrentMonth(addMonths(currentMonth, 1));
+    setSelectedDay(null); // Clear selection when changing months
   };
   
   const getDayClass = (day: Date) => {
     if (!userData?.lastPeriod) return '';
     
     const status = getDayStatus(day, userData.lastPeriod, cycleLength, periodLength);
+    const isSelected = selectedDay && isSameDay(day, selectedDay);
+    
+    let baseClasses = 'cursor-pointer relative z-10';
     
     if (status === 'onPeriod') {
-      return 'bg-gradient-to-br from-rose-400 to-pink-500 text-white shadow-xl transform hover:scale-125 hover:rotate-3 transition-all duration-300';
+      baseClasses += isSelected 
+        ? ' bg-gradient-to-br from-rose-600 to-pink-700 text-white shadow-2xl ring-4 ring-pink-300 ring-offset-2' 
+        : ' bg-gradient-to-br from-rose-400 to-pink-500 text-white shadow-xl hover:shadow-2xl';
+      baseClasses += ' transform hover:scale-125 hover:rotate-3 transition-all duration-300';
+    } else if (status === 'fertile') {
+      baseClasses += isSelected 
+        ? ' bg-gradient-to-br from-purple-600 to-violet-700 text-white shadow-2xl ring-4 ring-purple-300 ring-offset-2' 
+        : ' bg-gradient-to-br from-purple-400 to-violet-500 text-white shadow-lg hover:shadow-xl';
+      baseClasses += ' transform hover:scale-110 hover:-rotate-2 transition-all duration-300';
+    } else {
+      baseClasses += isSelected 
+        ? ' bg-gradient-to-br from-empowher-primary to-empowher-secondary text-white shadow-xl ring-4 ring-empowher-primary/50 ring-offset-2' 
+        : ' hover:bg-gradient-to-br hover:from-empowher-light/70 hover:to-purple-100/70';
+      baseClasses += ' hover:scale-110 transform transition-all duration-300 hover:shadow-md';
     }
     
-    if (status === 'fertile') {
-      return 'bg-gradient-to-br from-purple-400 to-violet-500 text-white shadow-lg transform hover:scale-110 hover:-rotate-2 transition-all duration-300';
-    }
-    
-    return 'hover:bg-gradient-to-br hover:from-empowher-light/70 hover:to-purple-100/70 hover:scale-110 transform transition-all duration-300 hover:shadow-md';
+    return baseClasses;
   };
 
   const getDayIcon = (day: Date) => {
@@ -114,6 +127,11 @@ const Calendar: React.FC = () => {
     }
     
     return null;
+  };
+
+  const handleDayClick = (day: Date) => {
+    console.log('Day clicked:', format(day, 'yyyy-MM-dd'));
+    setSelectedDay(day);
   };
 
   const getPhaseMessage = (day: Date) => {
@@ -243,15 +261,16 @@ const Calendar: React.FC = () => {
                 <button
                   key={day.toString()}
                   className={cn(
-                    "aspect-square rounded-2xl flex flex-col items-center justify-center text-sm relative transition-all duration-300 font-medium",
+                    "aspect-square rounded-2xl flex flex-col items-center justify-center text-sm relative transition-all duration-300 font-medium pointer-events-auto",
                     isSameMonth(day, currentMonth) ? "text-empowher-text" : "text-empowher-text/30",
                     isSameDay(day, new Date()) && "ring-4 ring-yellow-400 ring-offset-2 ring-offset-white",
                     getDayClass(day),
-                    hoveredDay && isSameDay(day, hoveredDay) && "shadow-2xl z-10"
+                    hoveredDay && isSameDay(day, hoveredDay) && "shadow-2xl z-20"
                   )}
                   onMouseEnter={() => setHoveredDay(day)}
                   onMouseLeave={() => setHoveredDay(null)}
-                  onClick={() => setSelectedDay(day)}
+                  onClick={() => handleDayClick(day)}
+                  type="button"
                 >
                   <div className="flex flex-col items-center relative">
                     <span className="font-bold text-lg">{format(day, 'd')}</span>
@@ -291,6 +310,13 @@ const Calendar: React.FC = () => {
                     {getPhaseMessage(selectedDay)}
                   </p>
                 </div>
+                <Button 
+                  variant="outline" 
+                  onClick={() => setSelectedDay(null)}
+                  className="mt-4 border-empowher-primary/50 text-empowher-primary hover:bg-empowher-light/50"
+                >
+                  Close Details
+                </Button>
               </div>
             </CardContent>
           </Card>
