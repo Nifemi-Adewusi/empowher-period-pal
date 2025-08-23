@@ -28,25 +28,31 @@ const PeriodTracker: React.FC = () => {
         <CardContent className="pb-2">
           <div className="space-y-2">
             <p className="text-sm">When did your last period start?</p>
-            <Popover>
+            <Popover modal={false}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
                   className={cn(
-                    "w-full justify-start text-left font-normal text-sm sm:text-base",
+                    "w-full justify-start text-left font-normal text-sm sm:text-base relative z-10 pointer-events-auto",
                     !date && "text-muted-foreground"
                   )}
+                  type="button"
+                  role="combobox"
+                  aria-expanded="false"
+                  aria-haspopup="dialog"
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   {date ? format(date, "PPP") : "Select a date"}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
+              <PopoverContent className="w-auto p-0 z-[100]" align="start" side="bottom" sideOffset={4}>
                 <Calendar
                   mode="single"
                   selected={date}
                   onSelect={setDate}
                   initialFocus
+                  disabled={(date) => date > new Date()}
+                  className="pointer-events-auto"
                 />
               </PopoverContent>
             </Popover>
