@@ -96,22 +96,27 @@ const Settings = () => {
           {/* Last Period Setting */}
           <div className="space-y-2">
             <Label>Last Period Start Date</Label>
-            <Popover>
+            <Popover modal={false}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
-                  className="w-full justify-start text-left font-normal"
+                  className="w-full justify-start text-left font-normal relative z-10 pointer-events-auto"
+                  type="button"
+                  role="combobox"
+                  aria-expanded="false"
+                  aria-haspopup="dialog"
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   {lastPeriod ? format(lastPeriod, "PPP") : "Pick a date"}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
+              <PopoverContent className="w-auto p-0 z-[100]" align="start" side="bottom" sideOffset={4}>
                 <Calendar
                   mode="single"
                   selected={lastPeriod}
                   onSelect={setLastPeriod}
                   initialFocus
+                  disabled={(date) => date > new Date()}
                   className="pointer-events-auto"
                 />
               </PopoverContent>
