@@ -1,14 +1,21 @@
 
 import React from 'react';
 import { format } from 'date-fns';
-import { CalendarIcon, User } from 'lucide-react';
+import { CalendarIcon, User, Bell } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
+import { Switch } from '@/components/ui/switch';
 import { toast } from '@/hooks/use-toast';
+import { 
+  requestNotificationPermission, 
+  getNotificationSettings, 
+  saveNotificationSettings,
+  scheduleCheckIn 
+} from '@/utils/notifications';
 
 const Settings = () => {
   const { userData, setUserData } = useUser();
@@ -21,6 +28,18 @@ const Settings = () => {
   );
   const [periodLength, setPeriodLength] = React.useState(
     userData?.periodLength?.toString() || '5'
+  );
+  
+  // Notification settings
+  const notificationSettings = getNotificationSettings();
+  const [notificationsEnabled, setNotificationsEnabled] = React.useState(
+    notificationSettings.enabled
+  );
+  const [notificationTime, setNotificationTime] = React.useState(
+    notificationSettings.time
+  );
+  const [notificationPermission, setNotificationPermission] = React.useState(
+    typeof Notification !== 'undefined' ? Notification.permission : 'default'
   );
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -65,6 +84,49 @@ const Settings = () => {
       title: "Settings updated",
       description: "Your changes have been saved successfully.",
     });
+  };
+
+  const handleNotificationToggle = async (enabled: boolean) => {
+    if (enabled) {
+      const granted = await requestNotificationPermission();
+      if (!granted) {
+        toast({
+          title: "Permission denied",
+          description: "Please enable notifications in your browser settings.",
+          variant: "destructive",
+        });
+        return;
+      }
+      setNotificationPermission('granted');
+    }
+    
+    setNotificationsEnabled(enabled);
+    saveNotificationSettings({ enabled, time: notificationTime });
+    
+    if (enabled) {
+      scheduleCheckIn();
+      toast({
+        title: "Notifications enabled! 🔔",
+        description: `You'll receive daily check-ins at ${notificationTime}`,
+      });
+    } else {
+      toast({
+        title: "Notifications disabled",
+        description: "You won't receive daily check-ins.",
+      });
+    }
+  };
+
+  const handleTimeChange = (time: string) => {
+    setNotificationTime(time);
+    if (notificationsEnabled) {
+      saveNotificationSettings({ enabled: true, time });
+      scheduleCheckIn();
+      toast({
+        title: "Time updated",
+        description: `Daily check-ins will now arrive at ${time}`,
+      });
+    }
   };
 
   return (
@@ -157,6 +219,49 @@ const Settings = () => {
             <p className="text-xs text-empowher-text/60">
               Average period length is 5 days
             </p>
+          </div>
+
+          {/* Notification Settings */}
+          <div className="space-y-4 pt-4 border-t">
+            <div className="flex items-center gap-2 mb-2">
+              <Bell className="h-5 w-5 text-empowher-primary" />
+              <h3 className="font-semibold text-lg">Daily Check-Ins</h3>
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label htmlFor="notifications">Enable Notifications</Label>
+                <p className="text-xs text-empowher-text/60">
+                  Get daily reminders to check in with yourself
+                </p>
+              </div>
+              <Switch
+                id="notifications"
+                checked={notificationsEnabled}
+                onCheckedChange={handleNotificationToggle}
+              />
+            </div>
+
+            {notificationsEnabled && (
+              <div className="space-y-2 pl-4 border-l-2 border-empowher-primary/20">
+                <Label htmlFor="notificationTime">Check-in Time</Label>
+                <Input
+                  id="notificationTime"
+                  type="time"
+                  value={notificationTime}
+                  onChange={(e) => handleTimeChange(e.target.value)}
+                />
+                <p className="text-xs text-empowher-text/60">
+                  Choose when you'd like to receive your daily check-in 💖
+                </p>
+              </div>
+            )}
+
+            {notificationPermission === 'denied' && (
+              <div className="text-xs text-destructive bg-destructive/10 p-3 rounded">
+                Notifications are blocked. Please enable them in your browser settings.
+              </div>
+            )}
           </div>
 
           <Button type="submit" className="w-full btn-gradient">
