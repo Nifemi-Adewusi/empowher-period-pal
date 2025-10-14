@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Calendar, PieChart, Settings } from 'lucide-react';
+import { Home, Calendar, PieChart, Settings, Sparkles } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 
 const Navbar = () => {
@@ -24,6 +23,12 @@ const Navbar = () => {
           label="Calendar"
           icon={<Calendar size={24} />}
           isActive={location.pathname === '/calendar'}
+        />
+        <NavItem
+          to="/hygiene"
+          label="Hygiene"
+          icon={<Sparkles size={24} />}
+          isActive={location.pathname === '/hygiene'}
         />
         <NavItem
           to="/insights"
