@@ -12,6 +12,7 @@ import Calendar from "./pages/Calendar";
 import Settings from "./pages/Settings";
 import Insights from "./pages/Insights";
 import Hygiene from "./pages/Hygiene";
+import Journal from "./pages/Journal";
 import Navbar from "./components/Navbar";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="/settings" element={<Settings />} />
             <Route path="/insights" element={<Insights />} />
             <Route path="/hygiene" element={<Hygiene />} />
+            <Route path="/journal" element={<Journal />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <Navbar />
